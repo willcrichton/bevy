@@ -40,6 +40,7 @@ pub trait AssetIo: Downcast + Send + Sync + 'static {
         path: &Path,
     ) -> Result<Box<dyn Iterator<Item = PathBuf>>, AssetIoError>;
     fn is_directory(&self, path: &Path) -> bool;
+    fn exists(&self, path: &Path) -> bool;
     fn watch_path_for_changes(&self, path: &Path) -> Result<(), AssetIoError>;
     fn watch_for_changes(&self) -> Result<(), AssetIoError>;
 }

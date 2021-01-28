@@ -102,6 +102,10 @@ impl AssetIo for FileAssetIo {
     fn is_directory(&self, path: &Path) -> bool {
         self.root_path.join(path).is_dir()
     }
+
+    fn exists(&self, path: &Path) -> bool {
+        self.root_path.join(path).exists()
+    }
 }
 
 #[cfg(all(
