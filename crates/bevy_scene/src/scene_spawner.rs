@@ -321,6 +321,10 @@ impl SceneSpawner {
             .get(&instance_id)
             .map(|instance| instance.entity_map.values())
     }
+
+    pub fn entity_map(&self, instance_id: InstanceId) -> Option<&EntityMap> {
+        self.spawned_instances.get(&instance_id).map(|instance| &instance.entity_map)
+    }
 }
 
 pub fn scene_spawner_system(world: &mut World, resources: &mut Resources) {

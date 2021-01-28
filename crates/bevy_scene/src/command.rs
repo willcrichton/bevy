@@ -2,11 +2,13 @@ use bevy_asset::Handle;
 use bevy_ecs::{Command, Commands, Entity, Resources, World};
 use bevy_transform::hierarchy::ChildBuilder;
 
-use crate::{Scene, SceneSpawner};
+use crate::{Scene, SceneSpawner, InstanceId};
 
 pub struct SpawnScene {
     scene_handle: Handle<Scene>,
 }
+
+pub struct LatestInstance(pub InstanceId);
 
 impl Command for SpawnScene {
     fn write(self: Box<Self>, _world: &mut World, resources: &mut Resources) {
@@ -31,9 +33,10 @@ pub struct SpawnSceneAsChild {
 }
 
 impl Command for SpawnSceneAsChild {
-    fn write(self: Box<Self>, _world: &mut World, resources: &mut Resources) {
+    fn write(self: Box<Self>, world: &mut World, resources: &mut Resources) {
         let mut spawner = resources.get_mut::<SceneSpawner>().unwrap();
-        spawner.spawn_as_child(self.scene_handle, self.parent);
+        let instance_id = spawner.spawn_as_child(self.scene_handle, self.parent);
+        world.insert_one(self.parent, LatestInstance(instance_id)).unwrap();
     }
 }
 
