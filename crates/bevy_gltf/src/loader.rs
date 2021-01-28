@@ -35,23 +35,23 @@ use crate::{Gltf, GltfNode};
 /// An error that occurs when loading a GLTF file
 #[derive(Error, Debug)]
 pub enum GltfError {
-    #[error("unsupported primitive mode")]
+    #[error("unsupported primitive mode: {mode:?}")]
     UnsupportedPrimitive { mode: Mode },
-    #[error("unsupported min filter")]
+    #[error("unsupported min filter: {filter:?}")]
     UnsupportedMinFilter { filter: MinFilter },
-    #[error("invalid GLTF file")]
+    #[error("invalid GLTF file: {0}")]
     Gltf(#[from] gltf::Error),
     #[error("binary blob is missing")]
     MissingBlob,
-    #[error("failed to decode base64 mesh data")]
+    #[error("failed to decode base64 mesh data: {0}")]
     Base64Decode(#[from] base64::DecodeError),
     #[error("unsupported buffer format")]
     BufferFormatUnsupported,
-    #[error("invalid image mime type")]
+    #[error("invalid image mime type: {0}")]
     InvalidImageMimeType(String),
-    #[error("failed to load an image")]
+    #[error("failed to load an image: {0}")]
     ImageError(#[from] image::ImageError),
-    #[error("failed to load an asset path")]
+    #[error("failed to load an asset path: {0}")]
     AssetIoError(#[from] AssetIoError),
 }
 
@@ -461,6 +461,7 @@ fn texture_sampler(texture: &gltf::Texture) -> Result<SamplerDescriptor, GltfErr
             .map(|mf| match mf {
                 MinFilter::Nearest => Ok(FilterMode::Nearest),
                 MinFilter::Linear => Ok(FilterMode::Linear),
+                MinFilter::LinearMipmapLinear => Ok(FilterMode::Linear),
                 filter => Err(GltfError::UnsupportedMinFilter { filter }),
             })
             .transpose()?
