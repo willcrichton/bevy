@@ -53,7 +53,7 @@ impl AssetIo for WasmAssetIo {
         self.root_path.join(path).is_dir()
     }
 
-    fn exists(&self, path: &Path) -> bool {
+    fn exists(&self, _path: &Path) -> bool {
         true
     }
 }
